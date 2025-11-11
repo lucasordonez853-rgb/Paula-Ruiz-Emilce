@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kahoot Informático</title>
+<style>
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: radial-gradient(circle at center, #00111a, #000);
+    color: #00ffff;
+    text-align: center;
+    padding: 20px;
+  }
+  h1 {
+    color: #00e0ff;
+    text-shadow: 0 0 8px #00e0ff;
+  }
+  #creator {
+    font-size: 14px;
+    color: #66ffff;
+    margin-bottom: 20px;
+  }
+  #game-container {
+    max-width: 500px;
+    margin: 0 auto;
+    background: rgba(0, 25, 35, 0.9);
+    border: 2px solid #00e0ff;
+    border-radius: 15px;
+    padding: 20px;
+    box-shadow: 0 0 15px #00e0ff;
+  }
+  button {
+    background: linear-gradient(90deg, #00e0ff, #0077ff);
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 18px;
+    padding: 10px 20px;
+    margin: 10px;
+    cursor: pointer;
+    transition: transform 0.1s ease-in-out;
+  }
+  button:hover {
+    transform: scale(1.05);
+  }
+  #start-btn {
+    font-size: 22px;
+    background: linear-gradient(90deg, #0099ff, #00ffff);
+  }
+  #question {
+    font-size: 20px;
+    margin-bottom: 15px;
+  }
+  #timer {
+    font-size: 22px;
+    color: #ffcc00;
+    text-shadow: 0 0 10px #ffcc00;
+    margin-bottom: 10px;
+  }
+  #score {
+    font-size: 20px;
+    color: #00ff99;
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+
+<h1>🧠 Quiz Informático</h1>
+<div id="creator">Creado por: <strong>Ruiz Paula Emilce</strong></div>
+
+<div id="game-container">
+  <div id="start-screen">
+    <button id="start-btn">Comenzar Juego</button>
+  </div>
+
+  <div id="quiz-screen" style="display:none;">
+    <div id="timer">Tiempo restante: 120s</div>
+    <div id="question"></div>
+    <button id="true-btn">Verdadero</button>
+    <button id="false-btn">Falso</button>
+  </div>
+
+  <div id="result-screen" style="display:none;">
+    <h2>¡Juego terminado!</h2>
+    <div id="final-score"></div>
+    <button onclick="location.reload()">Jugar de nuevo</button>
+  </div>
+</div>
+
+<script>
+const questions = [
+  {q: "En Excel, una fórmula siempre comienza con el signo igual (=).", a: "Verdadero"},
+  {q: "En Word, se puede cambiar el tipo, tamaño y color de letra desde la pestaña 'Inicio'.", a: "Verdadero"},
+  {q: "En Excel, el gráfico de columnas se usa para comparar datos.", a: "Verdadero"},
+  {q: "En Internet, los buscadores como Google o Bing sirven para encontrar información.", a: "Verdadero"},
+  {q: "En PowerPoint, se pueden aplicar transiciones entre las diapositivas.", a: "Verdadero"},
+  {q: "En PowerPoint, no se pueden insertar videos ni audios.", a: "Falso"},
+  {q: "No es necesario crear contraseñas si la computadora es personal.", a: "Falso"},
+  {q: "En Microsoft Word se pueden insertar imágenes, tablas y gráficos.", a: "Verdadero"},
+  {q: "El correo electrónico permite enviar mensajes, archivos y documentos.", a: "Verdadero"},
+  {q: "El navegador sirve para conectarse a una red WiFi.", a: "Falso"},
+  {q: "Es recomendable tener un antivirus para proteger la computadora.", a: "Verdadero"},
+  {q: "En Word, el comando CTRL + C se usa para copiar imágenes.", a: "Verdadero"},
+  {q: "En Excel, las columnas están identificadas con números y las filas con letras.", a: "Falso"},
+  {q: "La función SUMA() sirve para contar celdas con números.", a: "Falso"},
+  {q: "En PowerPoint, las diapositivas se usan para crear presentaciones con texto e imágenes.", a: "Verdadero"}
+];
+
+let current = 0;
+let score = 0;
+let timeLeft = 120; // ⏱️ Tiempo total: 2 minutos
+let timerInterval;
+
+const startBtn = document.getElementById('start-btn');
+const quizScreen = document.getElementById('quiz-screen');
+const questionEl = document.getElementById('question');
+const trueBtn = document.getElementById('true-btn');
+const falseBtn = document.getElementById('false-btn');
+const timerEl = document.getElementById('timer');
+const resultScreen = document.getElementById('result-screen');
+const finalScore = document.getElementById('final-score');
+
+function startGame() {
+  document.getElementById('start-screen').style.display = 'none';
+  quizScreen.style.display = 'block';
+  showQuestion();
+  timerInterval = setInterval(updateTimer, 1000);
+}
+
+function showQuestion() {
+  if (current < questions.length) {
+    questionEl.textContent = (current + 1) + ". " + questions[current].q;
+  } else {
+    endGame();
+  }
+}
+
+function checkAnswer(answer) {
+  if (current < questions.length) {
+    if (answer === questions[current].a) score++;
+    current++;
+    showQuestion();
+  }
+}
+
+function updateTimer() {
+  timeLeft--;
+  timerEl.textContent = "Tiempo restante: " + timeLeft + "s";
+  if (timeLeft <= 0) endGame();
+}
+
+function endGame() {
+  clearInterval(timerInterval);
+  quizScreen.style.display = 'none';
+  resultScreen.style.display = 'block';
+  let total = (score * 0.67).toFixed(2);
+  finalScore.innerHTML = `Respuestas correctas: ${score}/15<br>Puntuación final: ${total} puntos`;
+}
+
+startBtn.addEventListener('click', startGame);
+trueBtn.addEventListener('click', () => checkAnswer('Verdadero'));
+falseBtn.addEventListener('click', () => checkAnswer('Falso'));
+</script>
+
+</body>
+</html>
